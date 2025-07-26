@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">HelloSchedule</string>
+    <string name="app_title">Your Schedule, Right On Your Home Screen</string>
+    <string name="app_description">Hello-Schedule lets you open your daily schedule from your home screen, without opening a full app.</string>
+    <string name="add_shortcut">Add Shortcut to Home Screen&#160;</string>
+    <string name="schedule_title">Agenda</string>
+    <string name="shortcut_short_label">Schedule</string>
+    <string name="shortcut_long_label">View My Schedule</string>
+    <string name="new_event_button">Add New Event</string>
+    <string name="calendar_button_desc">Open Calendar</string>
+    <string name="help_quick_link">Or, access from the action panel, or using Quick links!</string>
+</resources>
