@@ -157,7 +157,13 @@ class ScheduleBottomSheet : BottomSheetDialogFragment(){
                     setTextColor(themedColor)
                     compoundDrawableTintList = ColorStateList.valueOf(themedColor)
 
-                    background = ContextCompat.getDrawable(context, android.R.drawable.list_selector_background)
+                    val attrs = intArrayOf(android.R.attr.selectableItemBackground)
+                    val typedArray = requireContext().obtainStyledAttributes(attrs)
+                    val selectableBackground = typedArray.getDrawable(0)
+                    typedArray.recycle()
+
+                    background = selectableBackground
+
                     setPadding(16, 16, 16, 16)
                     isAllCaps = false
 
