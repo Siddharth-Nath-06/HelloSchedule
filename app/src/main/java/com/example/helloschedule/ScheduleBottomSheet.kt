@@ -80,7 +80,7 @@ class ScheduleBottomSheet : BottomSheetDialogFragment(){
         Log.d("populateEvents", "Total events passed: ${events.size}")
         val today = LocalDate.now()
         val grouped = events
-            .filter { !it.isAllDay && isWithinThreeDays(it.startTime) && notExpired(it.endTime) }
+            .filter { isWithinThreeDays(it.startTime) && notExpired(it.endTime) }
             .groupBy { Instant.ofEpochMilli(it.startTime).atZone(ZoneId.systemDefault()).toLocalDate() }
 
         for (i in 0..2) {
@@ -127,8 +127,14 @@ class ScheduleBottomSheet : BottomSheetDialogFragment(){
                     val eventView = layoutInflater.inflate(R.layout.item_event, container, false)
 
                     eventView.findViewById<TextView>(R.id.eventTitle).text = event.title
-                    eventView.findViewById<TextView>(R.id.eventTime).text = formatEventTime(event.startTime, event.endTime)
-                    eventView.findViewById<TextView>(R.id.eventLocation).text = event.location
+                    if(!event.isAllDay)
+                        eventView.findViewById<TextView>(R.id.eventTime).text = formatEventTime(event.startTime, event.endTime)
+                    else
+                        eventView.findViewById<TextView>(R.id.eventTime).text = "Full day today"
+                    if (event.location.isBlank())
+                        eventView.findViewById<TextView>(R.id.eventLocation).visibility = View.GONE
+                    else
+                        eventView.findViewById<TextView>(R.id.eventLocation).text = event.location
 
                     eventView.setOnClickListener {
                         val uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, event.id)
