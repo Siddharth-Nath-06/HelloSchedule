@@ -80,7 +80,7 @@ class ScheduleBottomSheet : BottomSheetDialogFragment(){
         Log.d("populateEvents", "Total events passed: ${events.size}")
         val today = LocalDate.now()
         val grouped = events
-            .filter { !it.isAllDay && isWithinThreeDays(it.startTime) }
+            .filter { !it.isAllDay && isWithinThreeDays(it.startTime) && notExpired(it.endTime) }
             .groupBy { Instant.ofEpochMilli(it.startTime).atZone(ZoneId.systemDefault()).toLocalDate() }
 
         for (i in 0..2) {
@@ -215,6 +215,13 @@ class ScheduleBottomSheet : BottomSheetDialogFragment(){
         }
 
         container.addView(openCalendarButton)
+    }
+
+
+    private fun notExpired(endTime: Long): Boolean{
+        val currentTime = System.currentTimeMillis()
+        val gracePeriodMillis = 2 * 60 * 1000 // 2 minutes
+        return endTime + gracePeriodMillis > currentTime
     }
 
     private fun isWithinThreeDays(startTime: Long): Boolean {
