@@ -80,12 +80,13 @@ class ScheduleBottomSheet : BottomSheetDialogFragment(){
         Log.d("populateEvents", "Total events passed: ${events.size}")
         val today = LocalDate.now()
         val grouped = events
-            .filter { isWithinThreeDays(it.startTime) && notExpired(it.endTime) }
+            .filter { isWithinThreeDays(it.startTime) }
             .groupBy { Instant.ofEpochMilli(it.startTime).atZone(ZoneId.systemDefault()).toLocalDate() }
 
         for (i in 0..2) {
             val date = today.plusDays(i.toLong())
-            val dayEvents = grouped[date].orEmpty().sortedBy { it.startTime }
+            val originalDayEvents = grouped[date].orEmpty().sortedBy { it.startTime }
+            val dayEvents = originalDayEvents.filter { notExpired(it.endTime) }
 
             val dayTitle = TextView(requireContext()).apply {
                 text = when (i) {
@@ -109,7 +110,7 @@ class ScheduleBottomSheet : BottomSheetDialogFragment(){
             container.addView(dayTitle)
             container.addView(fullDateLabel)
 
-            if (dayEvents.isEmpty()) {
+            if (originalDayEvents.isEmpty()) {
                 val emptyView = TextView(requireContext()).apply {
                     text = "No events on this day"
                     setTextColor(resources.getColor(android.R.color.secondary_text_dark, null))
@@ -122,6 +123,21 @@ class ScheduleBottomSheet : BottomSheetDialogFragment(){
                     }
                 }
                 container.addView(emptyView)
+
+            } else if (dayEvents.isEmpty()) {
+                val noMoreView = TextView(requireContext()).apply {
+                    text = "No more events on this day"
+                    setTextColor(resources.getColor(android.R.color.secondary_text_dark, null))
+                    setPadding(16, 0, 16, 16)
+                    layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    ).apply {
+                        topMargin = (8 * resources.displayMetrics.density).toInt()
+                    }
+                }
+                container.addView(noMoreView)
+
             } else {
                 for (event in dayEvents) {
                     val eventView = layoutInflater.inflate(R.layout.item_event, container, false)
