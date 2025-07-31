@@ -262,7 +262,7 @@ class ScheduleBottomSheet : BottomSheetDialogFragment(){
 
         return when {
             now in startMillis..endMillis -> "Ongoing • ${Duration.between(startInstant, Instant.ofEpochMilli(now)).toMinutes()}m"
-            startMillis - now <= TimeUnit.MINUTES.toMillis(10) && startMillis > now -> "in ${Duration.between(Instant.ofEpochMilli(now), startInstant).toMinutes()}m"
+            startMillis - now <= TimeUnit.MINUTES.toMillis(10) && startMillis > now -> "in ${Duration.between(Instant.ofEpochMilli(now), startInstant).toMinutes() + 1}m"
             else -> "${start.format(DateTimeFormatter.ofPattern("h:mm a"))} – ${end.format(DateTimeFormatter.ofPattern("h:mm a"))}"
         }
     }
